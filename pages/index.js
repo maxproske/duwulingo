@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 const StyledWrapper = styled.div`
   background: white;
@@ -217,12 +217,81 @@ const StyledLabel = styled.div`
   color: #4b4b4b;
 `
 
+const appear = keyframes`
+  0% {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+`
+
+const StyledResult = styled.div`
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 24px 16px 72px;
+  position: absolute;
+  right: 0;
+
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+  animation-name: ${appear};
+  animation-timing-function: cubic-bezier(0.35, 1.8, 0.35, 0.83);
+
+  h3 {
+    font-size: 1.3rem;
+    line-height: 26px;
+    margin-bottom: 0.5rem;
+  }
+
+  h4 {
+    font-size: 1rem;
+    font-weight: 100;
+  }
+
+  button {
+    margin-top: 1rem;
+  }
+`
+
+const StyledErrorButton = styled(StyledButton)`
+  background-color: #ea2b2b;
+
+  &:after {
+    background-color: #ff4b4b;
+  }
+`
+
+const StyledIncorrectResult = styled(StyledResult)`
+  background-color: #ffc1c1;
+  color: #ea2b2b;
+`
+
+const StyledCorrectResult = styled(StyledResult)`
+  background-color: #b8f28b;
+  color: #58a700;
+`
+
 const Home = () => {
   const [answer, setAnswer] = useState(null)
+  const [error, setError] = useState(false)
+  const [correct, setCorrect] = useState(false)
 
   const handleOptionClick = (option) => {
     console.log(option)
     setAnswer(option)
+  }
+
+  const handleSubmit = () => {
+    answer === 'hewwo' ? setCorrect(true) : setError(true)
+  }
+
+  const reset = () => {
+    setAnswer(null)
+    setError(false)
+    setCorrect(false)
   }
 
   return (
@@ -236,12 +305,12 @@ const Home = () => {
           <StyledMiddle>
             <StyledPrompt>
               <h1>Select the correct translation</h1>
-              <h2>Hello!</h2>
+              <h2>Hello.</h2>
             </StyledPrompt>
             <StyledOptions>
-              <StyledOption onClick={() => handleOptionClick('pounces')}>
-                <StyledPort src={'pounces.png'} />
-                <StyledLabel>*pounces* :3</StyledLabel>
+              <StyledOption onClick={() => handleOptionClick('murr')}>
+                <StyledPort src={'murr.png'} />
+                <StyledLabel>murr~</StyledLabel>
               </StyledOption>
               <StyledOption onClick={() => handleOptionClick('nyaa')}>
                 <StyledPort src={'nyaa.png'} />
@@ -249,14 +318,29 @@ const Home = () => {
               </StyledOption>
               <StyledOption onClick={() => handleOptionClick('hewwo')}>
                 <StyledPort src={'hewwo.png'} />
-                <StyledLabel>hewwo!</StyledLabel>
+                <StyledLabel>hewwo :3</StyledLabel>
               </StyledOption>
             </StyledOptions>
           </StyledMiddle>
           <StyledBottom>
-            <StyledButton disabled={answer === null}>*boop*</StyledButton>
+            <StyledButton disabled={answer === null} onClick={handleSubmit}>
+              *boop*
+            </StyledButton>
           </StyledBottom>
         </StyledGrid>
+        {correct && (
+          <StyledCorrectResult>
+            <h3>You are correct</h3>
+            <StyledButton onClick={reset}>OwO</StyledButton>
+          </StyledCorrectResult>
+        )}
+        {error && (
+          <StyledIncorrectResult>
+            <h3>Correct solution:</h3>
+            <h4>hewwo :3</h4>
+            <StyledErrorButton onClick={reset}>uwu</StyledErrorButton>
+          </StyledIncorrectResult>
+        )}
       </StyledMain>
     </StyledWrapper>
   )
