@@ -23,6 +23,8 @@ const StyledMain = styled.main`
   top: 0;
   bottom: 0;
   right: 0;
+
+  overflow: hidden; /* Prevent screen shaking */
 `
 
 const StyledButton = styled.button`
@@ -78,6 +80,8 @@ const StyledButton = styled.button`
 `
 
 const StyledGrid = styled.div`
+  position: relative;
+
   max-width: 375px;
   margin: 0 auto;
 
@@ -176,8 +180,8 @@ const appear = keyframes`
 const StyledResult = styled.div`
   bottom: 0;
   left: 0;
-  margin: 0;
-  padding: 24px 16px 72px;
+  margin: 0 0 -100px;
+  padding: 24px 16px 172px;
   position: absolute;
   right: 0;
 
@@ -218,6 +222,11 @@ const StyledIncorrectResult = styled(StyledResult)`
 const StyledCorrectResult = styled(StyledResult)`
   background-color: #b8f28b;
   color: #58a700;
+`
+
+const StyledResultInner = styled.div`
+  max-width: 375px;
+  margin: 0 auto;
 `
 
 const Home = ({ options, solution }) => {
@@ -275,17 +284,22 @@ const Home = ({ options, solution }) => {
             </StyledButton>
           </StyledBottom>
         </StyledGrid>
+
         {correct && (
           <StyledCorrectResult>
-            <h3>You are correct</h3>
-            <StyledButton onClick={reset}>OwO</StyledButton>
+            <StyledResultInner>
+              <h3>You are correct</h3>
+              <StyledButton onClick={reset}>OwO</StyledButton>
+            </StyledResultInner>
           </StyledCorrectResult>
         )}
         {error && (
           <StyledIncorrectResult>
-            <h3>Correct solution:</h3>
-            <h4>{solution.text}</h4>
-            <StyledErrorButton onClick={reset}>uwu</StyledErrorButton>
+            <StyledResultInner>
+              <h3>Correct solution:</h3>
+              <h4>{solution.text}</h4>
+              <StyledErrorButton onClick={reset}>uwu</StyledErrorButton>
+            </StyledResultInner>
           </StyledIncorrectResult>
         )}
       </StyledMain>
