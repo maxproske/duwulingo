@@ -8,16 +8,14 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Comfortaa';
     src: url('/fonts/Comfortaa-VariableFont_wght.ttf');
   }
-
-  * {
-    /* Include padding and border in all elements' total width and height. */
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
+  
+  /* Include padding and border in all elements' total width and height. */
+  html {
     box-sizing: border-box;
   }
 
-  html {
-    background-color: black;
+  *, *:before, *:after {
+    box-sizing: inherit;
   }
   
   body {

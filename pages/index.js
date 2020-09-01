@@ -82,12 +82,18 @@ const StyledGrid = styled.div`
   display: grid;
   grid-gap: 24px;
   grid-template-columns: 100%;
-  grid-template-rows: min-content minmax(min-content, 650px) min-content;
+  grid-template-rows: min-content 1fr min-content;
   height: 100%;
   min-height: 460px;
+  max-height: 820px;
   overflow: hidden;
   padding: 24px 16px;
   width: 100%;
+
+  @media (max-height: 50rem) {
+    grid-gap: 1rem;
+    padding: 1rem;
+  }
 `
 
 const StyledTop = styled.div`
@@ -122,8 +128,15 @@ const StyledMiddle = styled.div`
   color: #3c3c3c;
 
   h1 {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     margin: 0.5rem 0 1.5rem 0;
+  }
+
+  @media (max-height: 50rem) {
+    h1 {
+      font-size: 1.2rem;
+      margin: 0 0 1rem 0;
+    }
   }
 
   h2 {
@@ -137,11 +150,14 @@ const StyledOptions = styled.div`
   grid-template-columns: repeat(2, 1fr);
   display: grid;
   grid-gap: 16px;
+  overflow: hidden;
 
-  align-content: center;
+  max-height: 32rem;
+
+  align-content: stretch;
 `
 
-const StyledOption = styled.button`
+const StyledOption = styled.label`
   display: flex;
   flex-direction: column;
   font-size: 19px;
@@ -199,13 +215,21 @@ const StyledOption = styled.button`
   }
 `
 
+const StyledPortWrapper = styled.div`
+  height: 100%;
+  width: 100%;
+  max-height: 9rem;
+  margin-bottom: 1rem;
+`
+
+// #e5e5e5
 const StyledPort = styled.div`
-  height: 130px;
-  width: 130px;
-  background: url('/ports/${({ src }) => src}') #e5e5e5;
+  background: url('/ports/${({ src }) => src}');
   background-size: cover;
+  background-repeat: no-repeat;
   background-position: bottom;
-  margin: 2rem 0;
+  height: 100%;
+  
 `
 
 const StyledBottom = styled.div`
@@ -309,15 +333,21 @@ const Home = () => {
             </StyledPrompt>
             <StyledOptions>
               <StyledOption onClick={() => handleOptionClick('murr')}>
-                <StyledPort src={'murr.png'} />
+                <StyledPortWrapper>
+                  <StyledPort src={'murr.png'} />
+                </StyledPortWrapper>
                 <StyledLabel>murr~</StyledLabel>
               </StyledOption>
               <StyledOption onClick={() => handleOptionClick('nyaa')}>
-                <StyledPort src={'nyaa.png'} />
+                <StyledPortWrapper>
+                  <StyledPort src={'nyaa.png'} />
+                </StyledPortWrapper>
                 <StyledLabel>nyaa?</StyledLabel>
               </StyledOption>
               <StyledOption onClick={() => handleOptionClick('hewwo')}>
-                <StyledPort src={'hewwo.png'} />
+                <StyledPortWrapper>
+                  <StyledPort src={'hewwo.png'} />
+                </StyledPortWrapper>
                 <StyledLabel>hewwo :3</StyledLabel>
               </StyledOption>
             </StyledOptions>
