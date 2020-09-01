@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import styled, { keyframes } from 'styled-components'
 
+import { Option } from '../components/Option'
+
 const StyledWrapper = styled.div`
   background: white;
   min-height: 100vh;
@@ -157,88 +159,8 @@ const StyledOptions = styled.div`
   align-content: stretch;
 `
 
-const StyledOption = styled.label`
-  display: flex;
-  flex-direction: column;
-  font-size: 19px;
-  padding: 12px;
-  position: relative;
-  background: none;
-  align-items: center;
-
-  border-width: 2px 2px 4px;
-  border-radius: 16px;
-  border-style: solid;
-  transform: translateZ(0);
-  border-color: transparent;
-  text-align: center;
-
-  &:hover {
-    cursor: pointer;
-    top: 2px;
-  }
-
-  &:hover:after {
-    background-color: #f7f7f7;
-  }
-
-  &:focus:after {
-    background-color: #ddf4ff;
-    border-color: #1cb0f6;
-  }
-
-  &:focus {
-    outline: none;
-    top: 2px;
-  }
-
-  &:after {
-    background-color: #fff;
-    border-color: #e5e5e5;
-    bottom: -4px;
-    content: '';
-    left: -2px;
-    right: -2px;
-    top: -2px;
-    border-width: 2px 2px 4px;
-    border-radius: 16px;
-    background-clip: padding-box;
-    border-style: solid;
-    position: absolute;
-    z-index: -1;
-  }
-
-  &:nth-child(3) {
-    grid-column: 1 / span 2;
-    margin: 0 auto;
-    width: calc(50% - 4px);
-  }
-`
-
-const StyledPortWrapper = styled.div`
-  height: 100%;
-  width: 100%;
-  max-height: 9rem;
-  margin-bottom: 1rem;
-`
-
-// #e5e5e5
-const StyledPort = styled.div`
-  background: url('/ports/${({ src }) => src}');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: bottom;
-  height: 100%;
-  
-`
-
 const StyledBottom = styled.div`
   text-align: center;
-`
-
-const StyledLabel = styled.div`
-  font-size: 1rem;
-  color: #4b4b4b;
 `
 
 const appear = keyframes`
@@ -298,22 +220,22 @@ const StyledCorrectResult = styled(StyledResult)`
   color: #58a700;
 `
 
-const Home = () => {
-  const [answer, setAnswer] = useState(null)
+const Home = ({ options, solution }) => {
+  const [selected, setSelected] = useState(null)
   const [error, setError] = useState(false)
   const [correct, setCorrect] = useState(false)
 
   const handleOptionClick = (option) => {
-    console.log(option)
-    setAnswer(option)
+    setSelected(option)
   }
 
   const handleSubmit = () => {
-    answer === 'hewwo' ? setCorrect(true) : setError(true)
+    console.log(selected)
+    selected === solution.id ? setCorrect(true) : setError(true)
   }
 
   const reset = () => {
-    setAnswer(null)
+    setSelected(null)
     setError(false)
     setCorrect(false)
   }
@@ -332,28 +254,23 @@ const Home = () => {
               <h2>Hello.</h2>
             </StyledPrompt>
             <StyledOptions>
-              <StyledOption onClick={() => handleOptionClick('murr')}>
-                <StyledPortWrapper>
-                  <StyledPort src={'murr.png'} />
-                </StyledPortWrapper>
-                <StyledLabel>murr~</StyledLabel>
-              </StyledOption>
-              <StyledOption onClick={() => handleOptionClick('nyaa')}>
-                <StyledPortWrapper>
-                  <StyledPort src={'nyaa.png'} />
-                </StyledPortWrapper>
-                <StyledLabel>nyaa?</StyledLabel>
-              </StyledOption>
-              <StyledOption onClick={() => handleOptionClick('hewwo')}>
-                <StyledPortWrapper>
-                  <StyledPort src={'hewwo.png'} />
-                </StyledPortWrapper>
-                <StyledLabel>hewwo :3</StyledLabel>
-              </StyledOption>
+              {options.map((option) => {
+                const { id, img, text } = option
+                return (
+                  <Option
+                    key={id}
+                    id={id}
+                    img={img}
+                    text={text}
+                    checked={selected === id}
+                    handleClick={handleOptionClick}
+                  />
+                )
+              })}
             </StyledOptions>
           </StyledMiddle>
           <StyledBottom>
-            <StyledButton disabled={answer === null} onClick={handleSubmit}>
+            <StyledButton disabled={selected === null} onClick={handleSubmit}>
               *boop*
             </StyledButton>
           </StyledBottom>
@@ -367,13 +284,51 @@ const Home = () => {
         {error && (
           <StyledIncorrectResult>
             <h3>Correct solution:</h3>
-            <h4>hewwo :3</h4>
+            <h4>{solution.text}</h4>
             <StyledErrorButton onClick={reset}>uwu</StyledErrorButton>
           </StyledIncorrectResult>
         )}
       </StyledMain>
     </StyledWrapper>
   )
+}
+
+export const getStaticProps = async () => {
+  const solution = {
+    id: 'hewwo',
+    img: 'hewwo.png',
+    text: 'hewwo :3',
+  }
+
+  const incorrect = [
+    {
+      id: 'murr',
+      img: 'murr.png',
+      text: 'murr~',
+    },
+    {
+      id: 'nyaa',
+      img: 'nyaa.png',
+      text: 'nyaa?',
+    },
+  ]
+
+  const shuffle = (arr) => {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[arr[i], arr[j]] = [arr[j], arr[i]]
+    }
+    return arr
+  }
+
+  const options = shuffle([solution, ...incorrect])
+
+  return {
+    props: {
+      options,
+      solution,
+    },
+  }
 }
 
 export default Home
